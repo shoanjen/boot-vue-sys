@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>平台后台 · 社团审核</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/18 blur-3xl"></div>
+      <div class="absolute right-[-160px] top-40 h-[34rem] w-[34rem] rounded-full bg-emerald-400/12 blur-3xl"></div>
+      <div class="absolute bottom-[-240px] left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-fuchsia-400/8 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <header class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+        <div class="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+              <i class="fa-solid fa-user-shield text-emerald-200"></i>
+            </div>
+            <div>
+              <div class="text-xs text-zinc-400">平台管理员后台</div>
+              <div class="text-lg font-semibold tracking-tight">社团创建审核</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./create-club.html"
+              title="学生端提交社团创建申请"
+            >
+              <i class="fa-solid fa-circle-plus"></i>
+              学生提交入口
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./login.html"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+              退出（演示）
+            </a>
+          </div>
+        </div>
+
+        <div class="border-t border-white/10 px-6 py-5">
+          <div class="grid grid-cols-3 gap-3 text-center text-xs">
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div class="text-zinc-400">待审核</div>
+              <div class="mt-1 text-base font-semibold text-amber-200" id="kpiPending">2</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div class="text-zinc-400">今日通过</div>
+              <div class="mt-1 text-base font-semibold text-zinc-100" id="kpiApproved">0</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div class="text-zinc-400">今日驳回</div>
+              <div class="mt-1 text-base font-semibold text-zinc-100" id="kpiRejected">0</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="mt-6 grid grid-cols-12 gap-6">
+        <main class="col-span-12 lg:col-span-8">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">待审核列表</div>
+                <div class="mt-1 text-xs text-zinc-400">通过/驳回需记录原因，并可追溯（MVP建议）</div>
+              </div>
+              <button
+                class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="toast('已刷新','已拉取最新审核列表（原型演示）')"
+              >
+                <i class="fa-solid fa-rotate"></i>
+                刷新
+              </button>
+            </div>
+            <div class="overflow-x-auto p-6">
+              <table class="w-full min-w-[820px] text-left text-sm">
+                <thead class="text-xs text-zinc-400">
+                  <tr>
+                    <th class="pb-3 font-medium">社团</th>
+                    <th class="pb-3 font-medium">类型</th>
+                    <th class="pb-3 font-medium">申请人</th>
+                    <th class="pb-3 font-medium">提交时间</th>
+                    <th class="pb-3 font-medium">状态</th>
+                    <th class="pb-3 font-medium text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewTable" class="text-zinc-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+
+        <aside class="col-span-12 lg:col-span-4">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-zinc-400">治理能力（MVP）</div>
+                <div class="mt-2 text-lg font-semibold tracking-tight">规则与提示</div>
+              </div>
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                <i class="fa-solid fa-scale-balanced text-zinc-100"></i>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-3 text-xs text-zinc-300">
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-400/15 text-emerald-200">
+                    <i class="fa-solid fa-check"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">审核通过</div>
+                    <div class="mt-1 leading-5 text-zinc-400">社团上架，申请人自动成为社团管理员</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-amber-400/15 text-amber-200">
+                    <i class="fa-solid fa-ban"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">审核驳回</div>
+                    <div class="mt-1 leading-5 text-zinc-400">需填写原因，申请人可修改后重新提交</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-white/10 text-zinc-100">
+                    <i class="fa-solid fa-eye-slash"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">下架/封禁（P1）</div>
+                    <div class="mt-1 leading-5 text-zinc-400">MVP 仅人工处理，后续可加举报与敏感词</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-3xl border border-white/10 bg-white/5 p-5 text-xs text-zinc-400">
+              审计建议：对审核动作记录对象类型/对象ID/原因/操作人/时间，便于追溯。
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="reviewModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('reviewModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">审核详情</div>
+              <div class="mt-1 text-xs text-zinc-300" id="modalSub">-</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('reviewModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 md:col-span-6 rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="text-xs text-zinc-400">社团名称</div>
+                <div class="mt-1 text-sm font-semibold text-zinc-100" id="mName">-</div>
+                <div class="mt-4 text-xs text-zinc-400">类型</div>
+                <div class="mt-1 text-sm font-semibold text-zinc-100" id="mType">-</div>
+              </div>
+              <div class="col-span-12 md:col-span-6 rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="text-xs text-zinc-400">申请人</div>
+                <div class="mt-1 text-sm font-semibold text-zinc-100" id="mApplicant">-</div>
+                <div class="mt-4 text-xs text-zinc-400">联系方式</div>
+                <div class="mt-1 text-sm font-semibold text-zinc-100" id="mContact">-</div>
+              </div>
+              <div class="col-span-12 rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="text-xs text-zinc-400">社团简介</div>
+                <div class="mt-2 text-sm leading-7 text-zinc-200" id="mIntro">-</div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <label class="text-xs text-zinc-200">驳回原因（驳回时必填）</label>
+              <textarea
+                id="rejectReason"
+                class="mt-2 h-24 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                placeholder="如：简介过短 / 联系方式不清晰 / 需要补充指导老师信息"
+              ></textarea>
+            </div>
+
+            <div class="mt-5 flex justify-end gap-2">
+              <button
+                class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('reviewModal')"
+              >
+                取消
+              </button>
+              <button
+                id="rejectBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-100 ring-1 ring-amber-400/25 transition hover:bg-amber-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-ban"></i>
+                驳回
+              </button>
+              <button
+                id="approveBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-check"></i>
+                通过
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const REVIEWS = [
+        {
+          id: "c-1",
+          name: "校园手作社",
+          type: "兴趣",
+          applicant: "张同学（20210002）",
+          contact: "handmade-club@school.edu",
+          intro: "手工制作、材料分享、作品展出与交流活动。欢迎喜欢手作的同学一起玩。",
+          time: "2026-05-01 10:31",
+          status: "待审核",
+        },
+        {
+          id: "c-2",
+          name: "清风跑团",
+          type: "文体",
+          applicant: "周同学（20210018）",
+          contact: "13800008888",
+          intro: "每周跑步训练与校内打卡，组织半马/十公里备赛，欢迎一起坚持。",
+          time: "2026-05-01 09:05",
+          status: "待审核",
+        },
+      ];
+
+      let activeReviewId = "";
+      let approvedCount = 0;
+      let rejectedCount = 0;
+
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1700);
+      }
+
+      /** @param {string} id */
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove("hidden");
+      }
+
+      /** @param {string} id */
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add("hidden");
+      }
+
+      function updateKpi() {
+        const pending = REVIEWS.filter((x) => x.status === "待审核").length;
+        document.getElementById("kpiPending").textContent = String(pending);
+        document.getElementById("kpiApproved").textContent = String(approvedCount);
+        document.getElementById("kpiRejected").textContent = String(rejectedCount);
+      }
+
+      /**
+       * @param {{id:string,name:string,type:string,applicant:string,contact:string,intro:string,time:string,status:string}} r
+       * @returns {string}
+       */
+      function renderRow(r) {
+        const badge =
+          r.status === "待审核"
+            ? `<span class="rounded-xl bg-amber-400/15 px-2 py-1 text-[11px] text-amber-100 ring-1 ring-amber-400/25">待审核</span>`
+            : r.status === "已通过"
+              ? `<span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">已通过</span>`
+              : `<span class="rounded-xl bg-white/5 px-2 py-1 text-[11px] text-zinc-200 ring-1 ring-white/10">已驳回</span>`;
+
+        const disabled = r.status !== "待审核";
+        return `
+          <tr class="border-t border-white/10">
+            <td class="py-4 pr-4">
+              <div class="flex items-center gap-3">
+                <div class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-zinc-200">
+                  <i class="fa-solid fa-people-group"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="truncate font-medium">${r.name}</div>
+                  <div class="mt-1 text-xs text-zinc-400 line-clamp-1">${r.intro}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 pr-4">
+              <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">${r.type}</span>
+            </td>
+            <td class="py-4 pr-4 text-xs text-zinc-300">${r.applicant}</td>
+            <td class="py-4 pr-4 text-xs text-zinc-400">${r.time}</td>
+            <td class="py-4 pr-4">${badge}</td>
+            <td class="py-4 text-right">
+              <button type="button"
+                class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs ${
+                  disabled ? "text-zinc-500" : "text-zinc-200 hover:bg-white/10"
+                } transition"
+                ${disabled ? "disabled" : ""}
+                onclick="openReview('${r.id}')">
+                <i class="fa-regular fa-pen-to-square"></i>审核
+              </button>
+            </td>
+          </tr>
+        `;
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById("reviewTable");
+        if (!tbody) return;
+        tbody.innerHTML = REVIEWS.map(renderRow).join("");
+        updateKpi();
+      }
+
+      /** @param {string} id */
+      function openReview(id) {
+        activeReviewId = id;
+        const r = REVIEWS.find((x) => x.id === id);
+        if (!r) return;
+        document.getElementById("modalSub").textContent = `提交时间：${r.time} · 状态：${r.status}`;
+        document.getElementById("mName").textContent = r.name;
+        document.getElementById("mType").textContent = r.type;
+        document.getElementById("mApplicant").textContent = r.applicant;
+        document.getElementById("mContact").textContent = r.contact;
+        document.getElementById("mIntro").textContent = r.intro;
+        const reason = document.getElementById("rejectReason");
+        if (reason) reason.value = "";
+        openModal("reviewModal");
+      }
+
+      function approve() {
+        const r = REVIEWS.find((x) => x.id === activeReviewId);
+        if (!r) return;
+        r.status = "已通过";
+        approvedCount += 1;
+        closeModal("reviewModal");
+        toast("审核通过", "社团已上架，申请人已成为社团管理员（原型演示）");
+        renderTable();
+      }
+
+      function reject() {
+        const r = REVIEWS.find((x) => x.id === activeReviewId);
+        if (!r) return;
+        const reason = document.getElementById("rejectReason")?.value || "";
+        if (reason.trim().length < 2) {
+          toast("驳回失败", "请填写驳回原因");
+          return;
+        }
+        r.status = "已驳回";
+        rejectedCount += 1;
+        closeModal("reviewModal");
+        toast("已驳回", "已记录原因并通知申请人，可修改后再次提交（原型演示）");
+        renderTable();
+      }
+
+      function initActions() {
+        document.getElementById("approveBtn")?.addEventListener("click", approve);
+        document.getElementById("rejectBtn")?.addEventListener("click", reject);
+      }
+
+      renderTable();
+      initActions();
+    </script>
+  </body>
+</html>
+

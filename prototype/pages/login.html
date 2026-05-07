@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-20 -top-24 h-96 w-96 rounded-full bg-brand-500/25 blur-3xl"></div>
+      <div class="absolute right-[-120px] top-24 h-[32rem] w-[32rem] rounded-full bg-emerald-400/18 blur-3xl"></div>
+      <div class="absolute bottom-[-220px] left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-fuchsia-400/10 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto flex min-h-screen max-w-6xl items-center px-6 py-10">
+      <div class="grid w-full grid-cols-12 gap-8">
+        <section class="col-span-12 lg:col-span-6">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-8 shadow-soft">
+            <div class="flex items-center gap-3">
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                <i class="fa-solid fa-people-group text-emerald-200"></i>
+              </div>
+              <div>
+                <div class="text-sm text-zinc-300">大学生社团管理系统</div>
+                <h1 class="text-xl font-semibold tracking-tight">登录</h1>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-2">
+              <button
+                class="roleBtn inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                data-role="student"
+                type="button"
+              >
+                <i class="fa-solid fa-graduation-cap"></i>
+                学生
+              </button>
+              <button
+                class="roleBtn inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                data-role="clubAdmin"
+                type="button"
+              >
+                <i class="fa-solid fa-user-gear"></i>
+                社团管理员
+              </button>
+            </div>
+
+            <form class="mt-6 space-y-4" onsubmit="return false;">
+              <div>
+                <label class="text-xs text-zinc-300">账号</label>
+                <div class="mt-2 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <i class="fa-regular fa-user text-zinc-400"></i>
+                  <input
+                    id="accountInput"
+                    class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                    placeholder="手机号 / 邮箱 / 学号"
+                    value="20210001"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs text-zinc-300">密码</label>
+                <div class="mt-2 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <i class="fa-solid fa-lock text-zinc-400"></i>
+                  <input
+                    id="passwordInput"
+                    type="password"
+                    class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                    placeholder="8-20位密码"
+                    value="12345678"
+                  />
+                  <button
+                    id="togglePwdBtn"
+                    class="rounded-xl px-2 py-1 text-xs text-zinc-300 transition hover:bg-white/10"
+                    type="button"
+                    title="显示/隐藏密码"
+                  >
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs text-zinc-400">
+                <label class="inline-flex items-center gap-2">
+                  <input class="h-4 w-4 rounded border-white/20 bg-white/5" type="checkbox" checked />
+                  记住我
+                </label>
+                <a class="hover:text-zinc-200" href="#" onclick="toast('暂不支持','MVP版本不包含找回密码流程');return false;">忘记密码</a>
+              </div>
+
+              <button
+                id="loginBtn"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                type="button"
+              >
+                <i class="fa-solid fa-right-to-bracket"></i>
+                登录并进入系统
+              </button>
+
+              <div class="flex items-center justify-between text-sm">
+                <div class="text-zinc-400">
+                  还没有账号？
+                  <a class="text-emerald-200 hover:text-emerald-100" href="./register.html">去注册</a>
+                </div>
+                <a
+                  class="text-zinc-300 hover:text-zinc-100"
+                  href="./club-plaza.html"
+                  title="快速进入（演示用）"
+                >
+                  跳过登录
+                  <i class="fa-solid fa-arrow-right-long ml-1"></i>
+                </a>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="col-span-12 lg:col-span-6">
+          <div class="glass h-full rounded-3xl border border-white/10 bg-white/5 p-8 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-zinc-400">MVP 覆盖能力</div>
+                <div class="mt-2 text-lg font-semibold tracking-tight">更快完成社团运营闭环</div>
+              </div>
+              <div class="hidden items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-300 md:flex">
+                <i class="fa-solid fa-shield-halved text-amber-200"></i>
+                鉴权 + 权限最小集
+              </div>
+            </div>
+
+            <div class="mt-6 grid gap-3">
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-400/15 text-emerald-200">
+                    <i class="fa-solid fa-compass"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">社团广场</div>
+                    <div class="mt-1 text-xs text-zinc-400">搜索、筛选、详情展示，支持申请加入。</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-brand-500/20 text-brand-200">
+                    <i class="fa-solid fa-calendar-check"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">活动管理</div>
+                    <div class="mt-1 text-xs text-zinc-400">发布活动、报名统计与导出，支持上限与截止校验。</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-amber-400/15 text-amber-200">
+                    <i class="fa-solid fa-user-shield"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">审核与治理</div>
+                    <div class="mt-1 text-xs text-zinc-400">社团创建审核、入社审核、关键操作留痕。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="flex items-center justify-between">
+                <div class="text-sm font-medium">演示账号</div>
+                <a class="text-xs text-emerald-200 hover:text-emerald-100" href="./platform-admin-dashboard.html">平台后台演示</a>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-3 text-xs text-zinc-300">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <div class="text-zinc-400">学生</div>
+                  <div class="mt-1 font-medium">20210001 / 12345678</div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <div class="text-zinc-400">社团管理员</div>
+                  <div class="mt-1 font-medium">A10001 / 12345678</div>
+                </div>
+              </div>
+              <div class="mt-3 text-xs text-zinc-500">
+                仅用于原型演示，不代表最终安全方案。
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let activeRole = "student";
+
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1600);
+      }
+
+      function initRoleButtons() {
+        const btns = document.querySelectorAll(".roleBtn");
+        btns.forEach((b) => {
+          b.addEventListener("click", () => {
+            activeRole = b.dataset.role || "student";
+            btns.forEach((x) =>
+              x.classList.remove("bg-white/10", "ring-1", "ring-emerald-400/25")
+            );
+            b.classList.add("bg-white/10", "ring-1", "ring-emerald-400/25");
+          });
+        });
+        const def = document.querySelector('.roleBtn[data-role="student"]');
+        def?.click();
+      }
+
+      function initPasswordToggle() {
+        const btn = document.getElementById("togglePwdBtn");
+        const input = document.getElementById("passwordInput");
+        btn?.addEventListener("click", () => {
+          if (!input) return;
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      }
+
+      function initLogin() {
+        const btn = document.getElementById("loginBtn");
+        btn?.addEventListener("click", () => {
+          if (activeRole === "clubAdmin") {
+            window.location.href = "./club-admin-dashboard.html";
+            return;
+          }
+          window.location.href = "./club-plaza.html";
+        });
+      }
+
+      initRoleButtons();
+      initPasswordToggle();
+      initLogin();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="boot-vue-sys-common" />
+        <module name="boot-vue-sys-domain" />
+        <module name="boot-vue-sys-application" />
+        <module name="boot-vue-sys-service" />
+        <module name="boot-vue-sys-web" />
+        <module name="boot-vue-sys-infrastructure" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="boot-vue-sys-application" options="-parameters" />
+      <module name="boot-vue-sys-common" options="-parameters" />
+      <module name="boot-vue-sys-domain" options="-parameters" />
+      <module name="boot-vue-sys-infrastructure" options="-parameters" />
+      <module name="boot-vue-sys-service" options="-parameters" />
+      <module name="boot-vue-sys-web" options="-parameters" />
+    </option>
+  </component>
+</project>

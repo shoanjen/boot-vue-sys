@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>注册 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-20 -top-24 h-96 w-96 rounded-full bg-brand-500/25 blur-3xl"></div>
+      <div class="absolute right-[-120px] top-24 h-[32rem] w-[32rem] rounded-full bg-emerald-400/18 blur-3xl"></div>
+      <div class="absolute bottom-[-220px] left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-fuchsia-400/10 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto flex min-h-screen max-w-5xl items-center px-6 py-10">
+      <div class="w-full">
+        <div class="mb-6 flex items-center justify-between">
+          <a
+            class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+            href="./login.html"
+          >
+            <i class="fa-solid fa-arrow-left-long"></i>
+            返回登录
+          </a>
+          <a class="text-sm text-zinc-300 hover:text-zinc-100" href="./club-plaza.html">
+            跳过注册（演示）
+            <i class="fa-solid fa-arrow-right-long ml-1"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8">
+          <section class="col-span-12 lg:col-span-7">
+            <div class="glass rounded-3xl border border-white/10 bg-white/5 p-8 shadow-soft">
+              <div class="flex items-center gap-3">
+                <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                  <i class="fa-solid fa-user-plus text-emerald-200"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-zinc-300">创建你的账号</div>
+                  <h1 class="text-xl font-semibold tracking-tight">注册</h1>
+                </div>
+              </div>
+
+              <form class="mt-6 space-y-4" onsubmit="return false;">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-zinc-300">姓名</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <input
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="如：张同学"
+                        value="张同学"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs text-zinc-300">学号</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <input
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="如：20210001"
+                        value="20210002"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-zinc-300">手机号（可选）</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <input
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="用于找回账号"
+                        value="13800000000"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs text-zinc-300">邮箱（可选）</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <input
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="用于接收通知"
+                        value="student@example.com"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-zinc-300">密码</label>
+                    <div class="mt-2 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <i class="fa-solid fa-lock text-zinc-400"></i>
+                      <input
+                        id="pwdInput"
+                        type="password"
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="8-20位"
+                        value="12345678"
+                      />
+                      <button
+                        id="togglePwdBtn"
+                        class="rounded-xl px-2 py-1 text-xs text-zinc-300 transition hover:bg-white/10"
+                        type="button"
+                        title="显示/隐藏密码"
+                      >
+                        <i class="fa-regular fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs text-zinc-300">确认密码</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <input
+                        type="password"
+                        class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                        placeholder="再次输入"
+                        value="12345678"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-zinc-300">学院（P1）</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <select class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none">
+                        <option>计算机学院</option>
+                        <option>经管学院</option>
+                        <option>文学院</option>
+                        <option>理学院</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs text-zinc-300">年级（P1）</label>
+                    <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <select class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none">
+                        <option>2025级</option>
+                        <option selected>2024级</option>
+                        <option>2023级</option>
+                        <option>2022级</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <label class="mt-1 inline-flex items-start gap-2 text-xs text-zinc-400">
+                  <input class="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5" type="checkbox" checked />
+                  我已阅读并同意《用户协议》和《隐私政策》（原型演示）
+                </label>
+
+                <button
+                  id="registerBtn"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                  type="button"
+                >
+                  <i class="fa-solid fa-sparkles"></i>
+                  完成注册并进入社团广场
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <section class="col-span-12 lg:col-span-5">
+            <div class="glass h-full rounded-3xl border border-white/10 bg-white/5 p-8 shadow-soft">
+              <div class="text-xs font-medium text-zinc-400">注册后你可以</div>
+              <div class="mt-2 text-lg font-semibold tracking-tight">快速找到适合你的社团</div>
+
+              <div class="mt-6 space-y-3">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="grid h-10 w-10 place-items-center rounded-2xl bg-white/10 text-zinc-100">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium">浏览与搜索</div>
+                      <div class="mt-1 text-xs text-zinc-400">按类型筛选：学术 / 文体 / 公益等。</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-400/15 text-emerald-200">
+                      <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium">申请加入</div>
+                      <div class="mt-1 text-xs text-zinc-400">提交理由，等待社团管理员审核。</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex items-center gap-3">
+                    <div class="grid h-10 w-10 place-items-center rounded-2xl bg-brand-500/20 text-brand-200">
+                      <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium">报名活动</div>
+                      <div class="mt-1 text-xs text-zinc-400">支持人数上限与报名截止时间校验。</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-center gap-3">
+                  <img
+                    class="h-12 w-12 rounded-2xl object-cover"
+                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=240&q=80"
+                    alt="校园"
+                  />
+                  <div class="min-w-0">
+                    <div class="text-sm font-medium">站内通知（MVP）</div>
+                    <div class="mt-1 text-xs text-zinc-400">
+                      审核结果与关键操作通过站内消息触达（阅读率作为成功指标之一）。
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1600);
+      }
+
+      function initPasswordToggle() {
+        const btn = document.getElementById("togglePwdBtn");
+        const input = document.getElementById("pwdInput");
+        btn?.addEventListener("click", () => {
+          if (!input) return;
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      }
+
+      function initRegister() {
+        const btn = document.getElementById("registerBtn");
+        btn?.addEventListener("click", () => {
+          toast("注册成功", "已创建账号（原型演示），即将进入社团广场");
+          window.setTimeout(() => {
+            window.location.href = "./club-plaza.html";
+          }, 600);
+        });
+      }
+
+      initPasswordToggle();
+      initRegister();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>社团详情 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/20 blur-3xl"></div>
+      <div class="absolute right-[-160px] top-32 h-[34rem] w-[34rem] rounded-full bg-emerald-400/15 blur-3xl"></div>
+      <div class="absolute bottom-[-240px] left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-fuchsia-400/8 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <header class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+        <div class="relative">
+          <img
+            class="h-52 w-full object-cover opacity-70"
+            src="https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=1800&q=80"
+            alt="社团封面"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent"></div>
+          <div class="absolute left-6 top-5 flex items-center gap-2">
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-zinc-100 transition hover:bg-white/15"
+              href="./club-plaza.html"
+            >
+              <i class="fa-solid fa-arrow-left-long"></i>
+              返回广场
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-zinc-100 transition hover:bg-white/15"
+              href="./my-center.html"
+            >
+              <i class="fa-regular fa-id-badge"></i>
+              我的
+            </a>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 px-6 pb-6">
+            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-xl border border-white/10 bg-white/10 px-2 py-1 text-[11px] text-zinc-100">学术</span>
+                  <span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">
+                    <i class="fa-regular fa-circle-check mr-1"></i>可加入
+                  </span>
+                  <span class="rounded-xl border border-white/10 bg-white/10 px-2 py-1 text-[11px] text-zinc-100">
+                    <i class="fa-regular fa-star mr-1 text-amber-200"></i>推荐
+                  </span>
+                </div>
+                <h1 class="mt-3 truncate text-2xl font-semibold tracking-tight">
+                  AI 学术社
+                </h1>
+                <div class="mt-2 text-sm text-zinc-300">
+                  一起做项目、读论文、办分享。每周例会 + 工作坊 + 公开课。
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <button
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-medium text-zinc-100 transition hover:bg-white/15 active:scale-[0.99]"
+                  type="button"
+                  onclick="toast('已收藏','已加入收藏（原型演示）')"
+                >
+                  <i class="fa-regular fa-bookmark"></i>
+                  收藏
+                </button>
+                <button
+                  id="joinBtn"
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                  type="button"
+                >
+                  <i class="fa-solid fa-user-check"></i>
+                  申请加入
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="mt-6 grid grid-cols-12 gap-6">
+        <main class="col-span-12 lg:col-span-8">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex flex-wrap items-center gap-2 border-b border-white/10 px-6 py-4">
+              <button
+                class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                data-tab="activity"
+                type="button"
+              >
+                <i class="fa-regular fa-calendar mr-2 text-zinc-300"></i>活动
+              </button>
+              <button
+                class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                data-tab="announcement"
+                type="button"
+              >
+                <i class="fa-regular fa-bell mr-2 text-zinc-300"></i>公告
+              </button>
+              <button
+                class="tabBtn rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                data-tab="about"
+                type="button"
+              >
+                <i class="fa-regular fa-circle-info mr-2 text-zinc-300"></i>社团介绍
+              </button>
+              <div class="ml-auto hidden items-center gap-2 text-xs text-zinc-400 md:flex">
+                <span class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  成员：168
+                </span>
+                <span class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  本月活动：3
+                </span>
+              </div>
+            </div>
+
+            <section id="tab-activity" class="p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-medium text-zinc-200">近期活动</div>
+                  <div class="mt-1 text-xs text-zinc-400">报名支持：人数上限 + 截止时间校验</div>
+                </div>
+                <button
+                  class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  type="button"
+                  onclick="toast('筛选已应用','当前默认按时间倒序展示（原型演示）')"
+                >
+                  <i class="fa-solid fa-sliders"></i>
+                  筛选
+                </button>
+              </div>
+
+              <div class="mt-4 grid gap-4">
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+                  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="rounded-xl bg-brand-500/20 px-2 py-1 text-[11px] text-brand-200 ring-1 ring-white/10">工作坊</span>
+                        <span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">剩余名额 6</span>
+                        <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">报名截止：05-05 18:00</span>
+                      </div>
+                      <div class="mt-2 truncate text-base font-semibold">
+                        从零训练一个小模型：数据 → 训练 → 部署
+                      </div>
+                      <div class="mt-2 text-xs leading-5 text-zinc-400">
+                        时间：05-08 19:00-21:00 · 地点：图书馆 3F 创新空间 · 适合：有编程基础
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                        type="button"
+                        onclick="toast('已加入待办','可在“我的报名/待办”查看（原型演示）')"
+                      >
+                        <i class="fa-regular fa-bookmark"></i>
+                        待办
+                      </button>
+                      <button
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                        type="button"
+                        onclick="openModal('signupModal')"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        报名
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+                  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="rounded-xl bg-white/5 px-2 py-1 text-[11px] text-zinc-200 ring-1 ring-white/10">分享会</span>
+                        <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">报名截止：05-03 12:00</span>
+                      </div>
+                      <div class="mt-2 truncate text-base font-semibold">
+                        论文精读：RAG 评测与落地经验
+                      </div>
+                      <div class="mt-2 text-xs leading-5 text-zinc-400">
+                        时间：05-03 20:00-21:00 · 地点：线上会议链接（报名后可见）
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                        type="button"
+                        onclick="toast('提示','该活动报名快结束了（原型演示）')"
+                      >
+                        <i class="fa-regular fa-circle-info"></i>
+                        详情
+                      </button>
+                      <button
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/5 px-4 py-2 text-xs font-medium text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10"
+                        type="button"
+                        onclick="openModal('signupModal')"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        报名
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section id="tab-announcement" class="hidden p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-medium text-zinc-200">社团公告</div>
+                  <div class="mt-1 text-xs text-zinc-400">MVP：公告发布与阅读；已读状态为 P1</div>
+                </div>
+                <button
+                  class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  type="button"
+                  onclick="toast('已标记','已读状态为P1能力，后续可扩展（原型演示）')"
+                >
+                  <i class="fa-regular fa-circle-check"></i>
+                  标记已读（P1）
+                </button>
+              </div>
+
+              <div class="mt-4 space-y-3">
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold">本周例会：项目组招募与进度同步</div>
+                      <div class="mt-2 text-xs leading-5 text-zinc-400">
+                        时间：周三 19:30 · 地点：教学楼 A-302 · 内容：项目组分工、报名与安排
+                      </div>
+                    </div>
+                    <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">
+                      05-01
+                    </span>
+                  </div>
+                  <button
+                    class="mt-4 inline-flex items-center gap-2 text-xs text-emerald-200 hover:text-emerald-100"
+                    type="button"
+                    onclick="openModal('announcementModal')"
+                  >
+                    查看详情
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                  </button>
+                </article>
+
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="text-sm font-semibold">工作坊报名须知：名额与截止规则</div>
+                      <div class="mt-2 text-xs leading-5 text-zinc-400">
+                        报名截止后不可取消；如需例外由管理员手动处理（P1）。
+                      </div>
+                    </div>
+                    <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">
+                      04-28
+                    </span>
+                  </div>
+                  <button
+                    class="mt-4 inline-flex items-center gap-2 text-xs text-emerald-200 hover:text-emerald-100"
+                    type="button"
+                    onclick="openModal('announcementModal')"
+                  >
+                    查看详情
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                  </button>
+                </article>
+              </div>
+            </section>
+
+            <section id="tab-about" class="hidden p-6">
+              <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-12 lg:col-span-7">
+                  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div class="text-sm font-medium text-zinc-200">社团简介</div>
+                    <div class="mt-3 text-sm leading-7 text-zinc-300">
+                      我们致力于帮助同学们把 AI 从“听说过”变成“能落地”。社团提供项目实践、论文精读、公开分享、竞赛组队等内容。
+                      <span class="text-zinc-400"
+                        >MVP 版本侧重于入社/活动/公告的基础管理能力。</span
+                      >
+                    </div>
+                    <div class="mt-5 grid grid-cols-2 gap-3 text-xs">
+                      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="text-zinc-400">负责人</div>
+                        <div class="mt-1 font-semibold text-zinc-100">李同学</div>
+                      </div>
+                      <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="text-zinc-400">联系方式</div>
+                        <div class="mt-1 font-semibold text-zinc-100">ai-club@school.edu</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-span-12 lg:col-span-5">
+                  <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div class="text-sm font-medium text-zinc-200">加入须知</div>
+                    <div class="mt-3 space-y-3 text-xs text-zinc-300">
+                      <div class="flex items-start gap-2">
+                        <i class="fa-regular fa-circle-check mt-[2px] text-emerald-200"></i>
+                        <div>提交申请理由，等待社团管理员审核。</div>
+                      </div>
+                      <div class="flex items-start gap-2">
+                        <i class="fa-regular fa-circle-check mt-[2px] text-emerald-200"></i>
+                        <div>通过后可报名活动、接收公告通知。</div>
+                      </div>
+                      <div class="flex items-start gap-2">
+                        <i class="fa-solid fa-shield-halved mt-[2px] text-amber-200"></i>
+                        <div>关键操作会记录操作人、时间与原因（MVP建议）。</div>
+                      </div>
+                    </div>
+                    <div class="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-zinc-400">
+                      如果社团被下架/封禁，将隐藏入社与报名入口。
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <aside class="col-span-12 lg:col-span-4">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-zinc-400">状态面板</div>
+                <div class="mt-2 text-lg font-semibold tracking-tight">你的状态</div>
+              </div>
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                <i class="fa-solid fa-signal text-zinc-100"></i>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-3">
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm font-medium text-zinc-200">成员身份</div>
+                  <span class="rounded-xl bg-amber-400/15 px-2 py-1 text-[11px] text-amber-100 ring-1 ring-amber-400/25">
+                    未加入
+                  </span>
+                </div>
+                <div class="mt-2 text-xs leading-5 text-zinc-400">
+                  入社审核通过后可报名活动与接收公告。
+                </div>
+                <button
+                  class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                  type="button"
+                  onclick="openModal('joinModal')"
+                >
+                  <i class="fa-solid fa-user-check"></i>
+                  立即申请加入
+                </button>
+              </div>
+
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="text-sm font-medium text-zinc-200">快捷入口</div>
+                <div class="mt-3 grid gap-2">
+                  <a class="inline-flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10" href="./my-center.html">
+                    <span class="inline-flex items-center gap-2"><i class="fa-regular fa-id-badge text-zinc-300"></i>我的申请</span>
+                    <i class="fa-solid fa-chevron-right text-zinc-500"></i>
+                  </a>
+                  <a class="inline-flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10" href="./create-club.html">
+                    <span class="inline-flex items-center gap-2"><i class="fa-solid fa-circle-plus text-zinc-300"></i>创建社团申请</span>
+                    <i class="fa-solid fa-chevron-right text-zinc-500"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="joinModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('joinModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">申请加入 · AI 学术社</div>
+              <div class="mt-1 text-xs text-zinc-300">必填：申请理由（10-200字）</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('joinModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <label class="text-xs text-zinc-200">申请理由</label>
+            <textarea
+              id="joinReason"
+              class="mt-2 h-28 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+              placeholder="例如：想参与项目实践、提升工程能力、结识同方向同学…"
+            >我对模型训练与RAG落地很感兴趣，希望加入项目组一起实践。</textarea>
+            <div class="mt-3 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <div class="text-xs text-zinc-400">学院（P1）</div>
+                <div class="mt-1 text-sm font-medium text-zinc-100">计算机学院</div>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <div class="text-xs text-zinc-400">年级（P1）</div>
+                <div class="mt-1 text-sm font-medium text-zinc-100">2024级</div>
+              </div>
+            </div>
+
+            <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('joinModal')"
+              >
+                取消
+              </button>
+              <button
+                id="submitJoinBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                type="button"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                提交申请
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="signupModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('signupModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">活动报名</div>
+              <div class="mt-1 text-xs text-zinc-300">校验：成员身份 / 是否已报名 / 名额 / 截止时间</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('signupModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+              <div class="text-sm font-semibold">从零训练一个小模型：数据 → 训练 → 部署</div>
+              <div class="mt-2 text-xs text-zinc-400">报名截止：05-05 18:00 · 剩余名额：6</div>
+              <div class="mt-3 text-xs leading-5 text-zinc-300">
+                提醒：入社审核通过后才可报名。当前为原型演示，点击报名会提示需要先加入社团。
+              </div>
+            </div>
+            <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('signupModal')"
+              >
+                返回
+              </button>
+              <button
+                id="confirmSignupBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                type="button"
+              >
+                <i class="fa-solid fa-check"></i>
+                立即报名
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="announcementModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('announcementModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">公告详情</div>
+              <div class="mt-1 text-xs text-zinc-300">站内公告 · 原型演示</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('announcementModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div class="text-base font-semibold">本周例会：项目组招募与进度同步</div>
+            <div class="mt-2 text-xs text-zinc-400">发布人：李同学 · 05-01 18:20</div>
+            <div class="mt-4 text-sm leading-7 text-zinc-300">
+              同学们好，本周例会将进行项目组招募与进度同步：<br />
+              1）介绍本学期项目方向与角色分工；<br />
+              2）现场组队与报名；<br />
+              3）答疑与资源共享。<br />
+              欢迎对模型训练、RAG、Agent工程化等方向感兴趣的同学参加。
+            </div>
+            <div class="mt-5 flex justify-end">
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/5 px-4 py-3 text-sm text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('announcementModal')"
+              >
+                我知道了
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let isMember = false;
+
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1700);
+      }
+
+      /** @param {string} id */
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove("hidden");
+      }
+
+      /** @param {string} id */
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add("hidden");
+      }
+
+      /** @param {"activity"|"announcement"|"about"} tab */
+      function setTab(tab) {
+        const tabs = ["activity", "announcement", "about"];
+        tabs.forEach((t) => {
+          const section = document.getElementById(`tab-${t}`);
+          if (!section) return;
+          section.classList.toggle("hidden", t !== tab);
+        });
+        document.querySelectorAll(".tabBtn").forEach((btn) => {
+          const active = btn.getAttribute("data-tab") === tab;
+          btn.classList.toggle("bg-white/10", active);
+          btn.classList.toggle("ring-1", active);
+          btn.classList.toggle("ring-emerald-400/25", active);
+        });
+      }
+
+      function initTabs() {
+        document.querySelectorAll(".tabBtn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const tab = btn.getAttribute("data-tab");
+            if (!tab) return;
+            setTab(tab);
+          });
+        });
+        setTab("activity");
+      }
+
+      function initJoin() {
+        const joinBtn = document.getElementById("joinBtn");
+        joinBtn?.addEventListener("click", () => openModal("joinModal"));
+
+        const submit = document.getElementById("submitJoinBtn");
+        submit?.addEventListener("click", () => {
+          const reason = document.getElementById("joinReason")?.value || "";
+          if (reason.trim().length < 10) {
+            toast("提交失败", "申请理由至少10个字");
+            return;
+          }
+          closeModal("joinModal");
+          toast("已提交申请", "状态：审核中。你可以在“我的申请”查看进度");
+          window.setTimeout(() => {
+            window.location.href = "./my-center.html";
+          }, 900);
+        });
+      }
+
+      function initSignup() {
+        const confirm = document.getElementById("confirmSignupBtn");
+        confirm?.addEventListener("click", () => {
+          if (!isMember) {
+            closeModal("signupModal");
+            toast("无法报名", "你还不是成员，请先申请加入并等待审核通过");
+            window.setTimeout(() => openModal("joinModal"), 650);
+            return;
+          }
+          closeModal("signupModal");
+          toast("报名成功", "已加入“我的报名”，可在个人中心查看");
+        });
+      }
+
+      initTabs();
+      initJoin();
+      initSignup();
+    </script>
+  </body>
+</html>
+

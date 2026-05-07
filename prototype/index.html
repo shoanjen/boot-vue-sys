@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大学生社团管理系统 · MVP 原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="bg-zinc-950 text-zinc-100 antialiased">
+    <div class="min-h-screen">
+      <div
+        class="pointer-events-none fixed inset-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        <div
+          class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/25 blur-3xl"
+        ></div>
+        <div
+          class="absolute right-[-120px] top-40 h-[32rem] w-[32rem] rounded-full bg-emerald-400/20 blur-3xl"
+        ></div>
+        <div
+          class="absolute bottom-[-220px] left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-fuchsia-400/10 blur-3xl"
+        ></div>
+      </div>
+
+      <div class="relative mx-auto max-w-[1400px] px-6 py-8">
+        <header
+          class="glass flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-5 py-4 shadow-soft"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="grid h-10 w-10 place-items-center rounded-xl bg-white/10"
+            >
+              <i class="fa-solid fa-people-group text-emerald-200"></i>
+            </div>
+            <div>
+              <div class="text-sm text-zinc-300">PC 端 Web 原型 · HTML + Tailwind</div>
+              <h1 class="text-lg font-semibold tracking-tight">
+                大学生社团管理系统（MVP）
+              </h1>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div
+              class="hidden items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-300 md:flex"
+            >
+              <i class="fa-regular fa-clock"></i>
+              <span id="clockText">--:--</span>
+              <span class="text-zinc-500">·</span>
+              <span id="dateText">----</span>
+            </div>
+            <button
+              id="openNewTabBtn"
+              class="inline-flex items-center gap-2 rounded-xl bg-emerald-400/15 px-4 py-2 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+              type="button"
+            >
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              新窗口打开
+            </button>
+          </div>
+        </header>
+
+        <div class="mt-6 grid grid-cols-12 gap-6">
+          <aside
+            class="glass col-span-12 overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-soft lg:col-span-3"
+          >
+            <div class="border-b border-white/10 px-5 py-4">
+              <div class="text-sm font-medium text-zinc-200">页面导航</div>
+              <div class="mt-2 text-xs leading-5 text-zinc-400">
+                点击左侧页面，右侧将加载对应原型页面（iframe）。所有文案与流程均来自
+                MVP PRD 的核心闭环。
+              </div>
+            </div>
+            <div class="px-3 py-3">
+              <div class="flex flex-wrap gap-2 px-2 pb-3">
+                <button
+                  class="roleChip rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-role="all"
+                  type="button"
+                >
+                  全部页面
+                </button>
+                <button
+                  class="roleChip rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-role="student"
+                  type="button"
+                >
+                  学生端
+                </button>
+                <button
+                  class="roleChip rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-role="clubAdmin"
+                  type="button"
+                >
+                  社团管理员
+                </button>
+                <button
+                  class="roleChip rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-role="platformAdmin"
+                  type="button"
+                >
+                  平台管理员
+                </button>
+              </div>
+
+              <nav id="navList" class="space-y-2"></nav>
+            </div>
+            <div class="border-t border-white/10 px-5 py-4">
+              <div class="text-xs text-zinc-400">快速说明</div>
+              <div class="mt-2 space-y-2 text-xs text-zinc-300">
+                <div class="flex items-start gap-2">
+                  <i class="fa-solid fa-circle-check mt-[2px] text-emerald-300"></i>
+                  <div>包含：登录、社团广场、社团详情、入社申请、活动报名、公告、我的。</div>
+                </div>
+                <div class="flex items-start gap-2">
+                  <i class="fa-solid fa-shield-halved mt-[2px] text-amber-300"></i>
+                  <div>后台：社团入社审核/成员/活动/公告；平台审核社团。</div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <main class="col-span-12 lg:col-span-9">
+            <div
+              class="glass overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-soft"
+            >
+              <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-zinc-200" id="pageTitle">
+                    选择页面开始预览
+                  </div>
+                  <div class="mt-1 truncate text-xs text-zinc-400" id="pageHint">
+                    左侧选择页面，右侧会加载对应原型。支持页面内按钮与弹窗交互。
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button
+                    id="reloadBtn"
+                    class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                    type="button"
+                    title="刷新预览"
+                  >
+                    <i class="fa-solid fa-rotate"></i>
+                    刷新
+                  </button>
+                  <button
+                    id="copyLinkBtn"
+                    class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                    type="button"
+                    title="复制当前页面链接"
+                  >
+                    <i class="fa-regular fa-copy"></i>
+                    复制链接
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 gap-0">
+                <section class="col-span-12 border-b border-white/10 lg:col-span-4 lg:border-b-0 lg:border-r">
+                  <div class="p-5">
+                    <div class="text-xs font-medium text-zinc-300">推荐路径（MVP）</div>
+                    <div class="mt-3 space-y-3">
+                      <div
+                        class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                      >
+                        <div class="flex items-center gap-2 text-sm font-medium">
+                          <span
+                            class="grid h-6 w-6 place-items-center rounded-lg bg-emerald-400/15 text-emerald-200"
+                            >1</span
+                          >
+                          学生：入社 + 报名闭环
+                        </div>
+                        <div class="mt-2 text-xs leading-5 text-zinc-400">
+                          登录 → 社团广场 → 社团详情 → 申请加入 → 审核通过 → 活动报名 → 我的报名
+                        </div>
+                        <button
+                          class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-400/15 px-3 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                          type="button"
+                          data-open="studentFlow"
+                        >
+                          <i class="fa-solid fa-wand-magic-sparkles"></i>
+                          一键打开路径页面
+                        </button>
+                      </div>
+
+                      <div
+                        class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                      >
+                        <div class="flex items-center gap-2 text-sm font-medium">
+                          <span
+                            class="grid h-6 w-6 place-items-center rounded-lg bg-brand-500/20 text-brand-200"
+                            >2</span
+                          >
+                          社团管理员：管理后台
+                        </div>
+                        <div class="mt-2 text-xs leading-5 text-zinc-400">
+                          入社审核 → 成员管理 → 活动管理 → 公告发布（含表格与弹窗交互）
+                        </div>
+                        <button
+                          class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-xs font-medium text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10"
+                          type="button"
+                          data-open="clubAdmin"
+                        >
+                          <i class="fa-solid fa-gauge-high"></i>
+                          打开社团后台
+                        </button>
+                      </div>
+
+                      <div
+                        class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                      >
+                        <div class="flex items-center gap-2 text-sm font-medium">
+                          <span
+                            class="grid h-6 w-6 place-items-center rounded-lg bg-amber-400/15 text-amber-200"
+                            >3</span
+                          >
+                          平台管理员：社团审核
+                        </div>
+                        <div class="mt-2 text-xs leading-5 text-zinc-400">
+                          待审核列表 → 审核详情 → 通过/驳回（原因记录）
+                        </div>
+                        <button
+                          class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-xs font-medium text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10"
+                          type="button"
+                          data-open="platformAdmin"
+                        >
+                          <i class="fa-solid fa-user-shield"></i>
+                          打开平台后台
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="col-span-12 lg:col-span-8">
+                  <div class="relative h-[74vh] bg-zinc-900/40">
+                    <iframe
+                      id="previewFrame"
+                      title="原型预览"
+                      class="h-full w-full"
+                      src=""
+                    ></iframe>
+                    <div
+                      id="emptyState"
+                      class="absolute inset-0 grid place-items-center p-8"
+                    >
+                      <div class="max-w-md text-center">
+                        <div
+                          class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-white/10"
+                        >
+                          <i class="fa-solid fa-layer-group text-emerald-200"></i>
+                        </div>
+                        <div class="mt-4 text-lg font-semibold">开始预览原型</div>
+                        <div class="mt-2 text-sm leading-6 text-zinc-400">
+                          左侧选择一个页面即可加载。你也可以用右上角“新窗口打开”在独立标签页查看页面。
+                        </div>
+                        <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
+                          <button
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400/15 px-4 py-2 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                            type="button"
+                            data-open="default"
+                          >
+                            <i class="fa-solid fa-play"></i>
+                            打开社团广场
+                          </button>
+                          <button
+                            class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-white/10"
+                            type="button"
+                            data-open="login"
+                          >
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            打开登录页
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <div
+        id="toast"
+        class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+        role="status"
+        aria-live="polite"
+      >
+        <div
+          class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift"
+        >
+          <div
+            class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200"
+          >
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-medium text-zinc-100" id="toastTitle">
+              已复制
+            </div>
+            <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">
+              链接已复制到剪贴板
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const PAGES = [
+        {
+          id: "login",
+          title: "登录",
+          role: "student",
+          icon: "fa-right-to-bracket",
+          path: "pages/login.html",
+          hint: "账号密码登录，进入社团广场。",
+        },
+        {
+          id: "register",
+          title: "注册",
+          role: "student",
+          icon: "fa-user-plus",
+          path: "pages/register.html",
+          hint: "新用户注册，设置密码与基础信息。",
+        },
+        {
+          id: "clubPlaza",
+          title: "社团广场",
+          role: "student",
+          icon: "fa-compass",
+          path: "pages/club-plaza.html",
+          hint: "浏览社团列表，搜索筛选，进入详情。",
+        },
+        {
+          id: "clubDetail",
+          title: "社团详情",
+          role: "student",
+          icon: "fa-landmark",
+          path: "pages/club-detail.html",
+          hint: "查看社团介绍、活动与公告；发起入社申请。",
+        },
+        {
+          id: "myCenter",
+          title: "我的（学生）",
+          role: "student",
+          icon: "fa-id-badge",
+          path: "pages/my-center.html",
+          hint: "我的社团/我的报名/我的申请记录。",
+        },
+        {
+          id: "clubAdmin",
+          title: "社团后台（管理员）",
+          role: "clubAdmin",
+          icon: "fa-gauge-high",
+          path: "pages/club-admin-dashboard.html",
+          hint: "入社审核、成员、活动、公告管理。",
+        },
+        {
+          id: "platformAdmin",
+          title: "平台后台（审核）",
+          role: "platformAdmin",
+          icon: "fa-user-shield",
+          path: "pages/platform-admin-dashboard.html",
+          hint: "社团创建审核：通过/驳回与原因记录。",
+        },
+        {
+          id: "createClub",
+          title: "创建社团申请",
+          role: "student",
+          icon: "fa-circle-plus",
+          path: "pages/create-club.html",
+          hint: "提交社团资料进入待审核。",
+        },
+      ];
+
+      let activeRole = "all";
+      let activePageId = "";
+
+      /** @param {string} text */
+      function setText(id, text) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+      }
+
+      /**
+       * @param {string} title
+       * @param {string} desc
+       */
+      function showToast(title, desc) {
+        setText("toastTitle", title);
+        setText("toastDesc", desc);
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+        toast.classList.remove("hidden");
+        window.clearTimeout(showToast._t);
+        showToast._t = window.setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 1800);
+      }
+
+      /**
+       * @param {string} role
+       * @returns {Array<{id:string,title:string,role:string,icon:string,path:string,hint:string}>}
+       */
+      function getPagesByRole(role) {
+        if (role === "all") return PAGES;
+        return PAGES.filter((p) => p.role === role);
+      }
+
+      /** @param {string} role */
+      function renderNav(role) {
+        const nav = document.getElementById("navList");
+        if (!nav) return;
+        nav.innerHTML = "";
+        const list = getPagesByRole(role);
+        for (const p of list) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.dataset.pageId = p.id;
+          btn.className =
+            "group flex w-full items-start gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:bg-white/10";
+          btn.innerHTML = `
+            <div class="mt-0.5 grid h-9 w-9 flex-none place-items-center rounded-xl bg-white/10 text-zinc-200 transition group-hover:bg-white/15">
+              <i class="fa-solid ${p.icon}"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="truncate text-sm font-medium text-zinc-100">${p.title}</div>
+                <span class="rounded-lg border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-zinc-300">${
+                  p.role === "student"
+                    ? "学生端"
+                    : p.role === "clubAdmin"
+                      ? "社团后台"
+                      : "平台后台"
+                }</span>
+              </div>
+              <div class="mt-1 line-clamp-2 text-xs leading-5 text-zinc-400">${p.hint}</div>
+            </div>
+          `;
+          btn.addEventListener("click", () => loadPage(p.id));
+          nav.appendChild(btn);
+        }
+        updateActiveNav();
+      }
+
+      function updateActiveNav() {
+        const nav = document.getElementById("navList");
+        if (!nav) return;
+        const items = nav.querySelectorAll("button[data-page-id]");
+        items.forEach((btn) => {
+          const isActive = btn.dataset.pageId === activePageId;
+          btn.classList.toggle("bg-white/10", isActive);
+          btn.classList.toggle("ring-1", isActive);
+          btn.classList.toggle("ring-emerald-400/25", isActive);
+        });
+      }
+
+      /** @param {string} pageId */
+      function loadPage(pageId) {
+        const page = PAGES.find((p) => p.id === pageId);
+        if (!page) return;
+        activePageId = pageId;
+        const frame = document.getElementById("previewFrame");
+        const empty = document.getElementById("emptyState");
+        if (frame) frame.src = page.path;
+        if (empty) empty.classList.add("hidden");
+        setText("pageTitle", page.title);
+        setText("pageHint", page.hint);
+        updateActiveNav();
+      }
+
+      /** @returns {string} */
+      function getActivePageUrl() {
+        const page = PAGES.find((p) => p.id === activePageId);
+        if (!page) return "";
+        return new URL(page.path, window.location.href).toString();
+      }
+
+      /** @param {Date} now */
+      function updateClock(now) {
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        setText("clockText", `${hh}:${mm}`);
+        const yyyy = now.getFullYear();
+        const mo = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        setText("dateText", `${yyyy}-${mo}-${dd}`);
+      }
+
+      function initRoleChips() {
+        const chips = document.querySelectorAll(".roleChip");
+        chips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            activeRole = chip.dataset.role || "all";
+            chips.forEach((c) =>
+              c.classList.remove("bg-white/10", "ring-1", "ring-emerald-400/25")
+            );
+            chip.classList.add("bg-white/10", "ring-1", "ring-emerald-400/25");
+            renderNav(activeRole);
+          });
+        });
+        const defaultChip = document.querySelector('.roleChip[data-role="all"]');
+        if (defaultChip) defaultChip.click();
+      }
+
+      function initActions() {
+        const reloadBtn = document.getElementById("reloadBtn");
+        reloadBtn?.addEventListener("click", () => {
+          const frame = document.getElementById("previewFrame");
+          if (!frame || !frame.src) return;
+          frame.src = frame.src;
+          showToast("已刷新", "已刷新当前预览页面");
+        });
+
+        const copyLinkBtn = document.getElementById("copyLinkBtn");
+        copyLinkBtn?.addEventListener("click", async () => {
+          const url = getActivePageUrl();
+          if (!url) {
+            showToast("未选择页面", "请先从左侧选择一个页面");
+            return;
+          }
+          try {
+            await navigator.clipboard.writeText(url);
+            showToast("已复制", "页面链接已复制到剪贴板");
+          } catch (e) {
+            showToast("复制失败", "浏览器不支持剪贴板权限或被禁用");
+          }
+        });
+
+        const openNewTabBtn = document.getElementById("openNewTabBtn");
+        openNewTabBtn?.addEventListener("click", () => {
+          const url = getActivePageUrl();
+          if (!url) {
+            loadPage("clubPlaza");
+            window.setTimeout(() => window.open(getActivePageUrl(), "_blank"), 60);
+            return;
+          }
+          window.open(url, "_blank");
+        });
+
+        document.querySelectorAll("[data-open]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-open");
+            if (key === "default") loadPage("clubPlaza");
+            if (key === "login") loadPage("login");
+            if (key === "clubAdmin") loadPage("clubAdmin");
+            if (key === "platformAdmin") loadPage("platformAdmin");
+            if (key === "studentFlow") loadPage("clubPlaza");
+          });
+        });
+      }
+
+      updateClock(new Date());
+      window.setInterval(() => updateClock(new Date()), 20000);
+      initRoleChips();
+      initActions();
+    </script>
+  </body>
+</html>
+

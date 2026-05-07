@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>社团后台 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/18 blur-3xl"></div>
+      <div class="absolute right-[-160px] top-40 h-[34rem] w-[34rem] rounded-full bg-emerald-400/12 blur-3xl"></div>
+      <div class="absolute bottom-[-240px] left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-fuchsia-400/8 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <div class="grid grid-cols-12 gap-6">
+        <aside class="col-span-12 lg:col-span-3">
+          <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="border-b border-white/10 px-6 py-5">
+              <div class="flex items-center gap-3">
+                <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                  <i class="fa-solid fa-gauge-high text-emerald-200"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs text-zinc-400">社团管理员后台</div>
+                  <div class="truncate text-lg font-semibold tracking-tight">AI 学术社</div>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs">
+                <div class="text-zinc-400">当前角色</div>
+                <div class="font-medium text-zinc-100">社团管理员</div>
+              </div>
+            </div>
+
+            <nav class="p-3" id="sideNav"></nav>
+
+            <div class="border-t border-white/10 px-6 py-5">
+              <a class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10" href="./club-plaza.html">
+                <i class="fa-solid fa-compass"></i>
+                返回社团广场
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <main class="col-span-12 lg:col-span-9">
+          <header class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+              <div class="min-w-0">
+                <div class="text-xs text-zinc-400">管理面板</div>
+                <div class="text-lg font-semibold tracking-tight" id="sectionTitle">入社审核</div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  class="inline-flex items-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-2 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                  type="button"
+                  onclick="openModal('quickActionModal')"
+                >
+                  <i class="fa-solid fa-bolt"></i>
+                  快捷操作
+                </button>
+                <a class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10" href="./login.html">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                  退出（演示）
+                </a>
+              </div>
+            </div>
+
+            <div class="border-t border-white/10 px-6 py-5">
+              <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div class="text-zinc-400">待审入社</div>
+                  <div class="mt-1 text-base font-semibold text-amber-200" id="kpiJoinPending">3</div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div class="text-zinc-400">本周报名</div>
+                  <div class="mt-1 text-base font-semibold text-zinc-100">42</div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div class="text-zinc-400">公告阅读</div>
+                  <div class="mt-1 text-base font-semibold text-zinc-100">186</div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <section id="section-join" class="mt-6 glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">入社申请列表</div>
+                <div class="mt-1 text-xs text-zinc-400">通过/驳回需记录审核人、时间与原因（建议）</div>
+              </div>
+              <button
+                class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="toast('已刷新','已拉取最新申请列表（原型演示）')"
+              >
+                <i class="fa-solid fa-rotate"></i>
+                刷新
+              </button>
+            </div>
+            <div class="overflow-x-auto p-6">
+              <table class="w-full min-w-[720px] text-left text-sm">
+                <thead class="text-xs text-zinc-400">
+                  <tr>
+                    <th class="pb-3 font-medium">申请人</th>
+                    <th class="pb-3 font-medium">理由摘要</th>
+                    <th class="pb-3 font-medium">提交时间</th>
+                    <th class="pb-3 font-medium">状态</th>
+                    <th class="pb-3 font-medium text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="joinTable" class="text-zinc-200"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="section-members" class="mt-6 hidden glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">成员管理</div>
+                <div class="mt-1 text-xs text-zinc-400">MVP：成员列表/移除（角色设置为P1）</div>
+              </div>
+              <button
+                class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="toast('已导出','已生成CSV（原型演示）')"
+              >
+                <i class="fa-solid fa-file-export"></i>
+                导出名单（P1）
+              </button>
+            </div>
+            <div class="overflow-x-auto p-6">
+              <table class="w-full min-w-[720px] text-left text-sm">
+                <thead class="text-xs text-zinc-400">
+                  <tr>
+                    <th class="pb-3 font-medium">成员</th>
+                    <th class="pb-3 font-medium">角色</th>
+                    <th class="pb-3 font-medium">加入时间</th>
+                    <th class="pb-3 font-medium">状态</th>
+                    <th class="pb-3 font-medium text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="memberTable" class="text-zinc-200"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="section-activities" class="mt-6 hidden glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">活动管理</div>
+                <div class="mt-1 text-xs text-zinc-400">创建/发布/下架；报名名单查看与导出为P1</div>
+              </div>
+              <button
+                class="inline-flex items-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+                onclick="openModal('activityModal')"
+              >
+                <i class="fa-solid fa-circle-plus"></i>
+                创建活动
+              </button>
+            </div>
+            <div class="p-6">
+              <div class="grid gap-4" id="activityList"></div>
+            </div>
+          </section>
+
+          <section id="section-announcements" class="mt-6 hidden glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">公告管理</div>
+                <div class="mt-1 text-xs text-zinc-400">发布公告（站内）；已读状态为P1</div>
+              </div>
+              <button
+                class="inline-flex items-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+                onclick="openModal('announcementModal')"
+              >
+                <i class="fa-regular fa-bell"></i>
+                发布公告
+              </button>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3" id="announcementList"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="quickActionModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('quickActionModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="text-sm font-semibold">快捷操作</div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('quickActionModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div class="grid gap-3">
+              <button
+                class="inline-flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-left transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('quickActionModal');switchSection('join')"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-amber-400/15 text-amber-200">
+                    <i class="fa-regular fa-file-lines"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">处理入社审核</div>
+                    <div class="mt-1 text-xs text-zinc-400">快速通过/驳回并记录原因</div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-zinc-500"></i>
+              </button>
+              <button
+                class="inline-flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-left transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('quickActionModal');openModal('activityModal')"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-400/15 text-emerald-200">
+                    <i class="fa-regular fa-calendar-plus"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">创建活动</div>
+                    <div class="mt-1 text-xs text-zinc-400">设置时间地点、上限与截止</div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-zinc-500"></i>
+              </button>
+              <button
+                class="inline-flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-left transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('quickActionModal');openModal('announcementModal')"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="grid h-10 w-10 place-items-center rounded-2xl bg-brand-500/20 text-brand-200">
+                    <i class="fa-regular fa-bell"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium">发布公告</div>
+                    <div class="mt-1 text-xs text-zinc-400">站内通知社团成员</div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-zinc-500"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('reviewModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">审核入社申请</div>
+              <div class="mt-1 text-xs text-zinc-300" id="reviewHint">-</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('reviewModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <label class="text-xs text-zinc-200">驳回原因（仅驳回时必填）</label>
+            <textarea
+              id="rejectReason"
+              class="mt-2 h-24 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+              placeholder="如：信息不完整 / 不符合招新要求 / 请补充经历"
+            ></textarea>
+            <div class="mt-5 flex justify-end gap-2">
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('reviewModal')"
+              >
+                取消
+              </button>
+              <button
+                id="rejectBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-400/15 px-5 py-3 text-sm font-medium text-amber-100 ring-1 ring-amber-400/25 transition hover:bg-amber-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-ban"></i>
+                驳回
+              </button>
+              <button
+                id="approveBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-check"></i>
+                通过
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="activityModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('activityModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">创建活动</div>
+              <div class="mt-1 text-xs text-zinc-300">必填：标题、时间、地点、上限、截止、说明</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('activityModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12">
+                <label class="text-xs text-zinc-200">活动标题</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input
+                    id="actTitle"
+                    class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                    value="项目组开营：选题与分工"
+                    placeholder="2-50字"
+                  />
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-6">
+                <label class="text-xs text-zinc-200">开始时间</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input id="actStart" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none" value="2026-05-08 19:00" />
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-6">
+                <label class="text-xs text-zinc-200">结束时间</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input id="actEnd" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none" value="2026-05-08 21:00" />
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-7">
+                <label class="text-xs text-zinc-200">地点</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input id="actPlace" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none" value="图书馆 3F 创新空间" />
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-5">
+                <label class="text-xs text-zinc-200">人数上限（0表示不限）</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input id="actLimit" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none" value="30" />
+                </div>
+              </div>
+              <div class="col-span-12 md:col-span-6">
+                <label class="text-xs text-zinc-200">报名截止</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input id="actDeadline" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none" value="2026-05-05 18:00" />
+                </div>
+              </div>
+              <div class="col-span-12">
+                <label class="text-xs text-zinc-200">活动说明</label>
+                <textarea
+                  id="actDesc"
+                  class="mt-2 h-24 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                >介绍本学期项目方向、组队方式、协作工具与进度安排。</textarea>
+              </div>
+            </div>
+
+            <div class="mt-5 flex justify-end gap-2">
+              <button
+                class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('activityModal')"
+              >
+                取消
+              </button>
+              <button
+                id="createActBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-check"></i>
+                创建并发布
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="announcementModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black/60" onclick="closeModal('announcementModal')"></div>
+      <div class="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2">
+        <div class="glass overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-lift">
+          <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div class="min-w-0">
+              <div class="text-sm font-semibold">发布公告</div>
+              <div class="mt-1 text-xs text-zinc-300">必填：标题（2-50字）、内容（10-3000字）</div>
+            </div>
+            <button
+              class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+              type="button"
+              onclick="closeModal('announcementModal')"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="px-6 py-5">
+            <div>
+              <label class="text-xs text-zinc-200">标题</label>
+              <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <input
+                  id="annTitle"
+                  class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                  value="本周例会：项目组招募与进度同步"
+                />
+              </div>
+            </div>
+            <div class="mt-4">
+              <label class="text-xs text-zinc-200">内容</label>
+              <textarea
+                id="annContent"
+                class="mt-2 h-28 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+              >同学们好，本周例会将进行项目组招募与进度同步，欢迎参加。地点：教学楼 A-302。</textarea>
+            </div>
+            <div class="mt-5 flex justify-end gap-2">
+              <button
+                class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                type="button"
+                onclick="closeModal('announcementModal')"
+              >
+                取消
+              </button>
+              <button
+                id="publishAnnBtn"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                type="button"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                发布
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const NAV_ITEMS = [
+        { id: "join", title: "入社审核", icon: "fa-file-signature" },
+        { id: "members", title: "成员管理", icon: "fa-users" },
+        { id: "activities", title: "活动管理", icon: "fa-calendar-day" },
+        { id: "announcements", title: "公告管理", icon: "fa-bullhorn" },
+      ];
+
+      let activeSection = "join";
+      let reviewingId = "";
+
+      const JOIN_REQUESTS = [
+        {
+          id: "jr-1",
+          name: "王同学",
+          reason: "想参与项目实践与分享会，提升工程能力。",
+          time: "2026-05-01 20:12",
+          status: "待审核",
+        },
+        {
+          id: "jr-2",
+          name: "陈同学",
+          reason: "对模型训练很感兴趣，愿意参加例会与项目组。",
+          time: "2026-05-01 19:40",
+          status: "待审核",
+        },
+        {
+          id: "jr-3",
+          name: "林同学",
+          reason: "希望加入论文精读组，跟大家一起学习。",
+          time: "2026-04-30 22:05",
+          status: "待审核",
+        },
+      ];
+
+      const MEMBERS = [
+        { id: "m-1", name: "李同学", role: "管理员", joined: "2026-02-10", status: "正常" },
+        { id: "m-2", name: "张同学", role: "成员", joined: "2026-04-18", status: "正常" },
+        { id: "m-3", name: "赵同学", role: "成员", joined: "2026-03-22", status: "正常" },
+      ];
+
+      const ACTIVITIES = [
+        {
+          id: "a-1",
+          title: "从零训练一个小模型：数据 → 训练 → 部署",
+          time: "05-08 19:00-21:00",
+          place: "图书馆 3F 创新空间",
+          limit: 30,
+          deadline: "05-05 18:00",
+          status: "已发布",
+        },
+        {
+          id: "a-2",
+          title: "论文精读：RAG 评测与落地经验",
+          time: "05-03 20:00-21:00",
+          place: "线上会议链接（报名后可见）",
+          limit: 0,
+          deadline: "05-03 12:00",
+          status: "已发布",
+        },
+      ];
+
+      const ANNOUNCEMENTS = [
+        {
+          id: "n-1",
+          title: "本周例会：项目组招募与进度同步",
+          date: "05-01 18:20",
+          content: "本周例会欢迎参加，地点：教学楼 A-302。",
+          status: "已发布",
+        },
+        {
+          id: "n-2",
+          title: "工作坊报名须知：名额与截止规则",
+          date: "04-28 10:11",
+          content: "报名截止后不可取消；如需例外由管理员手动处理（P1）。",
+          status: "已发布",
+        },
+      ];
+
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1700);
+      }
+
+      /** @param {string} id */
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove("hidden");
+      }
+
+      /** @param {string} id */
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add("hidden");
+      }
+
+      function renderSideNav() {
+        const nav = document.getElementById("sideNav");
+        if (!nav) return;
+        nav.innerHTML = NAV_ITEMS.map((it) => {
+          const active = it.id === activeSection;
+          return `
+            <button type="button" data-section="${it.id}"
+              class="group flex w-full items-center justify-between rounded-2xl border border-white/10 px-4 py-3 text-left transition hover:bg-white/10 ${
+                active ? "bg-white/10 ring-1 ring-emerald-400/25" : "bg-white/5"
+              }">
+              <div class="flex items-center gap-3">
+                <div class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-zinc-200 group-hover:bg-white/15">
+                  <i class="fa-solid ${it.icon}"></i>
+                </div>
+                <div class="text-sm font-medium text-zinc-100">${it.title}</div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-zinc-600"></i>
+            </button>
+          `;
+        }).join("");
+
+        nav.querySelectorAll("button[data-section]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const sec = btn.getAttribute("data-section");
+            if (!sec) return;
+            switchSection(sec);
+          });
+        });
+      }
+
+      /** @param {"join"|"members"|"activities"|"announcements"} sec */
+      function switchSection(sec) {
+        activeSection = sec;
+        document.getElementById("sectionTitle").textContent =
+          NAV_ITEMS.find((x) => x.id === sec)?.title || "管理面板";
+
+        ["join", "members", "activities", "announcements"].forEach((id) => {
+          const el = document.getElementById(`section-${id}`);
+          if (!el) return;
+          el.classList.toggle("hidden", id !== sec);
+        });
+        renderSideNav();
+      }
+
+      function renderJoinTable() {
+        const tbody = document.getElementById("joinTable");
+        const kpi = document.getElementById("kpiJoinPending");
+        if (!tbody || !kpi) return;
+        const pending = JOIN_REQUESTS.filter((x) => x.status === "待审核").length;
+        kpi.textContent = String(pending);
+
+        tbody.innerHTML = JOIN_REQUESTS.map((r) => {
+          const statusBadge =
+            r.status === "待审核"
+              ? `<span class="rounded-xl bg-amber-400/15 px-2 py-1 text-[11px] text-amber-100 ring-1 ring-amber-400/25">待审核</span>`
+              : r.status === "已通过"
+                ? `<span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">已通过</span>`
+                : `<span class="rounded-xl bg-white/5 px-2 py-1 text-[11px] text-zinc-200 ring-1 ring-white/10">已驳回</span>`;
+          const disabled = r.status !== "待审核";
+          return `
+            <tr class="border-t border-white/10">
+              <td class="py-4 pr-4">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-zinc-200">
+                    <i class="fa-regular fa-user"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="truncate font-medium">${r.name}</div>
+                    <div class="mt-1 text-xs text-zinc-400">申请加入：AI 学术社</div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 pr-4">
+                <div class="text-xs leading-5 text-zinc-300 line-clamp-2">${r.reason}</div>
+              </td>
+              <td class="py-4 pr-4 text-xs text-zinc-400">${r.time}</td>
+              <td class="py-4 pr-4">${statusBadge}</td>
+              <td class="py-4 text-right">
+                <button type="button"
+                  class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs ${
+                    disabled ? "text-zinc-500" : "text-zinc-200 hover:bg-white/10"
+                  } transition"
+                  ${disabled ? "disabled" : ""}
+                  onclick="openReview('${r.id}')">
+                  <i class="fa-regular fa-pen-to-square"></i>处理
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function renderMembers() {
+        const tbody = document.getElementById("memberTable");
+        if (!tbody) return;
+        tbody.innerHTML = MEMBERS.map((m) => {
+          const roleBadge =
+            m.role === "管理员"
+              ? `<span class="rounded-xl bg-brand-500/20 px-2 py-1 text-[11px] text-brand-200 ring-1 ring-white/10">管理员</span>`
+              : `<span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">成员</span>`;
+          return `
+            <tr class="border-t border-white/10">
+              <td class="py-4 pr-4">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-zinc-200">
+                    <i class="fa-regular fa-user"></i>
+                  </div>
+                  <div class="font-medium">${m.name}</div>
+                </div>
+              </td>
+              <td class="py-4 pr-4">${roleBadge}</td>
+              <td class="py-4 pr-4 text-xs text-zinc-400">${m.joined}</td>
+              <td class="py-4 pr-4">
+                <span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">正常</span>
+              </td>
+              <td class="py-4 text-right">
+                <button type="button"
+                  class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  onclick="removeMember('${m.id}')">
+                  <i class="fa-solid fa-user-minus"></i>移除
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function renderActivities() {
+        const list = document.getElementById("activityList");
+        if (!list) return;
+        list.innerHTML = ACTIVITIES.map((a) => {
+          const limitText = a.limit === 0 ? "不限" : `${a.limit}人`;
+          return `
+            <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+              <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">${a.status}</span>
+                    <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">上限：${limitText}</span>
+                    <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">截止：${a.deadline}</span>
+                  </div>
+                  <div class="mt-2 text-sm font-semibold">${a.title}</div>
+                  <div class="mt-2 text-xs text-zinc-400">时间：${a.time} · 地点：${a.place}</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <a class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/5 px-4 py-2 text-xs font-medium text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10" href="./club-detail.html">
+                    前台查看
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                  </a>
+                  <button class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10" type="button" onclick="toast('已下架','活动已下架（原型演示）')">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    下架
+                  </button>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-zinc-400">
+                <div>报名名单查看/导出为 P1：可通过报名表 activity_signup 按活动ID单表查询后导出</div>
+                <button class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-400" type="button" disabled>
+                  <i class="fa-solid fa-file-arrow-down mr-2"></i>导出（P1）
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      function renderAnnouncements() {
+        const list = document.getElementById("announcementList");
+        if (!list) return;
+        list.innerHTML = ANNOUNCEMENTS.map((n) => {
+          return `
+            <article class="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="text-sm font-semibold">${n.title}</div>
+                  <div class="mt-2 text-xs leading-5 text-zinc-400 line-clamp-2">${n.content}</div>
+                </div>
+                <span class="rounded-xl border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-zinc-200">${n.date}</span>
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <div class="text-xs text-zinc-400">状态：${n.status}</div>
+                <button class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 transition hover:bg-white/10" type="button" onclick="toast('已下架','公告已下架（原型演示）')">
+                  <i class="fa-solid fa-eye-slash"></i>下架
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      /** @param {string} id */
+      function openReview(id) {
+        reviewingId = id;
+        const item = JOIN_REQUESTS.find((x) => x.id === id);
+        if (!item) return;
+        const hint = document.getElementById("reviewHint");
+        if (hint) hint.textContent = `申请人：${item.name} · 提交：${item.time}`;
+        const rejectReason = document.getElementById("rejectReason");
+        if (rejectReason) rejectReason.value = "";
+        openModal("reviewModal");
+      }
+
+      function approve() {
+        const item = JOIN_REQUESTS.find((x) => x.id === reviewingId);
+        if (!item) return;
+        item.status = "已通过";
+        closeModal("reviewModal");
+        toast("已通过", "申请已通过，成员关系已生效（原型演示）");
+        renderJoinTable();
+      }
+
+      function reject() {
+        const item = JOIN_REQUESTS.find((x) => x.id === reviewingId);
+        if (!item) return;
+        const reason = document.getElementById("rejectReason")?.value || "";
+        if (reason.trim().length < 2) {
+          toast("驳回失败", "请填写驳回原因");
+          return;
+        }
+        item.status = "已驳回";
+        closeModal("reviewModal");
+        toast("已驳回", "已记录驳回原因并通知申请人（原型演示）");
+        renderJoinTable();
+      }
+
+      /** @param {string} id */
+      function removeMember(id) {
+        const idx = MEMBERS.findIndex((x) => x.id === id);
+        if (idx < 0) return;
+        if (MEMBERS[idx].role === "管理员") {
+          toast("无法移除", "不能移除管理员（原型演示）");
+          return;
+        }
+        MEMBERS.splice(idx, 1);
+        toast("已移除", "成员已移除（原型演示）");
+        renderMembers();
+      }
+
+      function createActivity() {
+        const title = document.getElementById("actTitle")?.value || "";
+        const start = document.getElementById("actStart")?.value || "";
+        const end = document.getElementById("actEnd")?.value || "";
+        const place = document.getElementById("actPlace")?.value || "";
+        const limit = Number(document.getElementById("actLimit")?.value || "0");
+        const deadline = document.getElementById("actDeadline")?.value || "";
+        const desc = document.getElementById("actDesc")?.value || "";
+        if (title.trim().length < 2) return toast("创建失败", "标题至少2个字");
+        if (!start || !end) return toast("创建失败", "请填写开始与结束时间");
+        if (place.trim().length < 2) return toast("创建失败", "地点至少2个字");
+        if (Number.isNaN(limit) || limit < 0) return toast("创建失败", "人数上限需为≥0的数字");
+        if (!deadline) return toast("创建失败", "请填写报名截止");
+        if (desc.trim().length < 10) return toast("创建失败", "说明至少10个字");
+
+        ACTIVITIES.unshift({
+          id: `a-${Date.now()}`,
+          title: title.trim(),
+          time: start.includes(" ") ? start.split(" ").slice(1).join(" ") : start,
+          place: place.trim(),
+          limit,
+          deadline: deadline.includes(" ") ? deadline.split(" ").slice(0, 2).join(" ") : deadline,
+          status: "已发布",
+        });
+        closeModal("activityModal");
+        toast("创建成功", "活动已发布（原型演示）");
+        renderActivities();
+        switchSection("activities");
+      }
+
+      function publishAnnouncement() {
+        const title = document.getElementById("annTitle")?.value || "";
+        const content = document.getElementById("annContent")?.value || "";
+        if (title.trim().length < 2 || title.trim().length > 50) {
+          toast("发布失败", "标题需为2-50字");
+          return;
+        }
+        if (content.trim().length < 10) {
+          toast("发布失败", "内容至少10个字");
+          return;
+        }
+        ANNOUNCEMENTS.unshift({
+          id: `n-${Date.now()}`,
+          title: title.trim(),
+          date: "刚刚",
+          content: content.trim(),
+          status: "已发布",
+        });
+        closeModal("announcementModal");
+        toast("已发布", "公告已发布并通知成员（原型演示）");
+        renderAnnouncements();
+        switchSection("announcements");
+      }
+
+      function initButtons() {
+        document.getElementById("approveBtn")?.addEventListener("click", approve);
+        document.getElementById("rejectBtn")?.addEventListener("click", reject);
+        document.getElementById("createActBtn")?.addEventListener("click", createActivity);
+        document.getElementById("publishAnnBtn")?.addEventListener("click", publishAnnouncement);
+      }
+
+      renderSideNav();
+      renderJoinTable();
+      renderMembers();
+      renderActivities();
+      renderAnnouncements();
+      initButtons();
+      switchSection("join");
+    </script>
+  </body>
+</html>
+

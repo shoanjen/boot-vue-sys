@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>社团广场 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/20 blur-3xl"></div>
+      <div class="absolute right-[-160px] top-40 h-[34rem] w-[34rem] rounded-full bg-emerald-400/15 blur-3xl"></div>
+      <div class="absolute bottom-[-240px] left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-fuchsia-400/8 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <header class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+        <div class="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+              <i class="fa-solid fa-compass text-emerald-200"></i>
+            </div>
+            <div>
+              <div class="text-xs text-zinc-400">学生端 · 社团广场</div>
+              <div class="text-lg font-semibold tracking-tight">发现社团</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./my-center.html"
+            >
+              <i class="fa-regular fa-id-badge"></i>
+              我的
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./club-admin-dashboard.html"
+              title="演示入口：社团管理员后台"
+            >
+              <i class="fa-solid fa-gauge-high"></i>
+              社团后台
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./login.html"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+              退出（演示）
+            </a>
+          </div>
+        </div>
+
+        <div class="border-t border-white/10 px-6 py-5">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 lg:col-span-6">
+              <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <i class="fa-solid fa-magnifying-glass text-zinc-400"></i>
+                <input
+                  id="searchInput"
+                  class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                  placeholder="搜索社团名称 / 关键词（如：摄影、公益、AI）"
+                />
+                <button
+                  id="clearBtn"
+                  class="rounded-xl px-2 py-1 text-xs text-zinc-300 transition hover:bg-white/10"
+                  type="button"
+                  title="清空"
+                >
+                  清空
+                </button>
+              </div>
+            </div>
+            <div class="col-span-12 lg:col-span-6">
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  class="filterChip rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-type="全部"
+                  type="button"
+                >
+                  全部
+                </button>
+                <button
+                  class="filterChip rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-type="学术"
+                  type="button"
+                >
+                  学术
+                </button>
+                <button
+                  class="filterChip rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-type="文体"
+                  type="button"
+                >
+                  文体
+                </button>
+                <button
+                  class="filterChip rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-type="公益"
+                  type="button"
+                >
+                  公益
+                </button>
+                <button
+                  class="filterChip rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-200 transition hover:bg-white/10"
+                  data-type="兴趣"
+                  type="button"
+                >
+                  兴趣
+                </button>
+                <a
+                  class="ml-auto inline-flex items-center gap-2 rounded-2xl bg-emerald-400/15 px-4 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20"
+                  href="./create-club.html"
+                >
+                  <i class="fa-solid fa-circle-plus"></i>
+                  创建社团申请
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="mt-6 grid grid-cols-12 gap-6">
+        <main class="col-span-12 lg:col-span-8">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+            <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div class="min-w-0">
+                <div class="text-sm font-medium text-zinc-200">社团列表</div>
+                <div class="mt-1 text-xs text-zinc-400" id="resultHint">共 0 个社团</div>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-zinc-300">
+                <span class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  <i class="fa-regular fa-circle-check mr-1 text-emerald-200"></i>
+                  可加入
+                </span>
+                <span class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                  <i class="fa-solid fa-ban mr-1 text-amber-200"></i>
+                  暂停招新
+                </span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div id="clubGrid" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="col-span-12 lg:col-span-4">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-zinc-400">你的进度</div>
+                <div class="mt-2 text-lg font-semibold tracking-tight">我的社团旅程</div>
+              </div>
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10 text-zinc-100">
+                <i class="fa-solid fa-route"></i>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-3 text-sm">
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center justify-between">
+                  <div class="text-zinc-200">待处理申请</div>
+                  <div class="text-sm font-semibold text-amber-200">1</div>
+                </div>
+                <div class="mt-2 text-xs text-zinc-400">摄影社 · 入社申请（审核中）</div>
+                <a class="mt-3 inline-flex items-center gap-2 text-xs text-emerald-200 hover:text-emerald-100" href="./my-center.html">
+                  查看我的申请
+                  <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+              </div>
+
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center justify-between">
+                  <div class="text-zinc-200">推荐活动</div>
+                  <span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25">本周</span>
+                </div>
+                <div class="mt-2 text-xs text-zinc-400">
+                  AI 学术社 · “从零训练一个小模型” 工作坊（剩余名额 6）
+                </div>
+                <button
+                  class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white/5 px-4 py-2 text-xs font-medium text-zinc-200 ring-1 ring-white/10 transition hover:bg-white/10"
+                  type="button"
+                  onclick="toast('已加入待办','打开社团详情后可进行报名（原型演示）')"
+                >
+                  <i class="fa-solid fa-bookmark"></i>
+                  加入待办
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div class="text-xs font-medium text-zinc-400">MVP 说明</div>
+              <div class="mt-2 text-xs leading-5 text-zinc-400">
+                列表页仅做单表分页展示（避免多表关联），成员数/活动数可通过服务端汇总字段或异步聚合获得。
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const CLUBS = [
+        {
+          id: "club-ai",
+          name: "AI 学术社",
+          type: "学术",
+          members: 168,
+          status: "可加入",
+          tagline: "一起做项目、读论文、办分享。",
+          cover:
+            "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=1200&q=80",
+        },
+        {
+          id: "club-photo",
+          name: "光影摄影社",
+          type: "兴趣",
+          members: 92,
+          status: "审核中",
+          tagline: "记录校园日常，学习构图与后期。",
+          cover:
+            "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=1200&q=80",
+        },
+        {
+          id: "club-volunteer",
+          name: "青芽志愿团",
+          type: "公益",
+          members: 244,
+          status: "可加入",
+          tagline: "用行动参与公益，让善意可持续。",
+          cover:
+            "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80",
+        },
+        {
+          id: "club-basketball",
+          name: "篮球社",
+          type: "文体",
+          members: 120,
+          status: "暂停招新",
+          tagline: "每周训练与友谊赛，欢迎围观。",
+          cover:
+            "https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=1200&q=80",
+        },
+        {
+          id: "club-music",
+          name: "校园民谣社",
+          type: "兴趣",
+          members: 76,
+          status: "可加入",
+          tagline: "弹唱、合奏、舞台演出与录音。",
+          cover:
+            "https://images.unsplash.com/photo-1520975958225-4f0b9e55cd1b?auto=format&fit=crop&w=1200&q=80",
+        },
+        {
+          id: "club-debate",
+          name: "思辨辩论社",
+          type: "学术",
+          members: 58,
+          status: "可加入",
+          tagline: "每周例会训练，赛事备赛与复盘。",
+          cover:
+            "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
+        },
+      ];
+
+      let activeType = "全部";
+      let keyword = "";
+
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1600);
+      }
+
+      /**
+       * @param {{id:string,name:string,type:string,members:number,status:string,tagline:string,cover:string}} club
+       * @returns {string}
+       */
+      function renderClubCard(club) {
+        const statusBadge =
+          club.status === "可加入"
+            ? `<span class="rounded-xl bg-emerald-400/15 px-2 py-1 text-[11px] text-emerald-100 ring-1 ring-emerald-400/25"><i class="fa-regular fa-circle-check mr-1"></i>可加入</span>`
+            : club.status === "暂停招新"
+              ? `<span class="rounded-xl bg-amber-400/15 px-2 py-1 text-[11px] text-amber-100 ring-1 ring-amber-400/25"><i class="fa-solid fa-ban mr-1"></i>暂停招新</span>`
+              : `<span class="rounded-xl bg-white/5 px-2 py-1 text-[11px] text-zinc-200 ring-1 ring-white/10"><i class="fa-regular fa-hourglass-half mr-1"></i>审核中</span>`;
+
+        const action =
+          club.status === "可加入"
+            ? `<a class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-3 py-2 text-xs font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20" href="./club-detail.html">
+                <i class="fa-solid fa-arrow-right-long"></i>
+                查看详情
+              </a>`
+            : `<button class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-200 transition hover:bg-white/10" type="button" onclick="toast('暂不可操作','该社团当前不可申请或已在审核中')">
+                <i class="fa-solid fa-circle-info"></i>
+                了解原因
+              </button>`;
+
+        return `
+          <article class="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-soft transition hover:bg-white/10">
+            <div class="relative h-36 overflow-hidden">
+              <img class="h-full w-full object-cover opacity-85 transition duration-500 group-hover:scale-[1.03]" src="${club.cover}" alt="${club.name}" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent"></div>
+              <div class="absolute left-4 top-4 flex items-center gap-2">
+                <span class="rounded-xl border border-white/10 bg-white/10 px-2 py-1 text-[11px] text-zinc-100">${club.type}</span>
+                ${statusBadge}
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="truncate text-sm font-semibold">${club.name}</div>
+                  <div class="mt-1 line-clamp-2 text-xs leading-5 text-zinc-400">${club.tagline}</div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-center">
+                  <div class="text-xs text-zinc-400">成员</div>
+                  <div class="mt-0.5 text-sm font-semibold text-zinc-100">${club.members}</div>
+                </div>
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <a class="text-xs text-zinc-300 hover:text-zinc-100" href="./club-detail.html">
+                  进入详情
+                  <i class="fa-solid fa-up-right-from-square ml-1 text-zinc-400"></i>
+                </a>
+                ${action}
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      /** @returns {Array<any>} */
+      function getFilteredClubs() {
+        return CLUBS.filter((c) => {
+          const typeOk = activeType === "全部" ? true : c.type === activeType;
+          const kw = keyword.trim().toLowerCase();
+          const keywordOk = kw
+            ? `${c.name} ${c.tagline} ${c.type}`.toLowerCase().includes(kw)
+            : true;
+          return typeOk && keywordOk;
+        });
+      }
+
+      function render() {
+        const grid = document.getElementById("clubGrid");
+        const hint = document.getElementById("resultHint");
+        if (!grid || !hint) return;
+        const list = getFilteredClubs();
+        hint.textContent = `共 ${list.length} 个社团`;
+        grid.innerHTML = list.map(renderClubCard).join("");
+      }
+
+      function initFilters() {
+        const chips = document.querySelectorAll(".filterChip");
+        chips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            activeType = chip.dataset.type || "全部";
+            chips.forEach((c) =>
+              c.classList.remove("bg-white/10", "ring-1", "ring-emerald-400/25")
+            );
+            chip.classList.add("bg-white/10", "ring-1", "ring-emerald-400/25");
+            render();
+          });
+        });
+        const def = document.querySelector('.filterChip[data-type="全部"]');
+        def?.click();
+      }
+
+      function initSearch() {
+        const input = document.getElementById("searchInput");
+        input?.addEventListener("input", () => {
+          keyword = input.value || "";
+          render();
+        });
+        const clearBtn = document.getElementById("clearBtn");
+        clearBtn?.addEventListener("click", () => {
+          keyword = "";
+          if (input) input.value = "";
+          render();
+        });
+      }
+
+      initFilters();
+      initSearch();
+    </script>
+  </body>
+</html>
+

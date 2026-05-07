@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>创建社团申请 · 社团管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f6f7fb",
+                100: "#eef0f8",
+                200: "#d9def0",
+                300: "#b7c1e3",
+                400: "#8b98d2",
+                500: "#6170be",
+                600: "#4c57a0",
+                700: "#3d467f",
+                800: "#2f365f",
+                900: "#1f243f",
+              },
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.10)",
+              lift: "0 12px 50px rgba(15, 23, 42, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      .glass {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-brand-500/20 blur-3xl"></div>
+      <div class="absolute right-[-160px] top-40 h-[34rem] w-[34rem] rounded-full bg-emerald-400/15 blur-3xl"></div>
+      <div class="absolute bottom-[-240px] left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-fuchsia-400/8 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-8">
+      <header class="glass rounded-3xl border border-white/10 bg-white/5 shadow-soft">
+        <div class="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+              <i class="fa-solid fa-circle-plus text-emerald-200"></i>
+            </div>
+            <div>
+              <div class="text-xs text-zinc-400">学生端 · 社团入驻</div>
+              <div class="text-lg font-semibold tracking-tight">创建社团申请</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./club-plaza.html"
+            >
+              <i class="fa-solid fa-compass"></i>
+              返回广场
+            </a>
+            <a
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/10"
+              href="./my-center.html"
+            >
+              <i class="fa-regular fa-id-badge"></i>
+              我的申请
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <div class="mt-6 grid grid-cols-12 gap-6">
+        <main class="col-span-12 lg:col-span-8">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-medium text-zinc-200">申请表单</div>
+                <div class="mt-1 text-xs text-zinc-400">提交后进入待审核，审核结果会通过站内通知反馈</div>
+              </div>
+              <span class="rounded-xl bg-white/5 px-3 py-2 text-xs text-zinc-200 ring-1 ring-white/10">
+                <i class="fa-solid fa-route mr-1 text-zinc-300"></i>
+                模块：/api/v1/club/...
+              </span>
+            </div>
+
+            <form class="mt-6 space-y-4" onsubmit="return false;">
+              <div>
+                <label class="text-xs text-zinc-300">社团名称（必填，2-30字，唯一）</label>
+                <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <input
+                    id="clubName"
+                    class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                    placeholder="如：校园手作社"
+                    value="校园手作社"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 md:col-span-6">
+                  <label class="text-xs text-zinc-300">社团类型（必填）</label>
+                  <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <select id="clubType" class="w-full bg-transparent text-sm text-zinc-100 focus:outline-none">
+                      <option>学术</option>
+                      <option>文体</option>
+                      <option>公益</option>
+                      <option selected>兴趣</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <label class="text-xs text-zinc-300">指导老师（可选）</label>
+                  <div class="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <input
+                      id="advisor"
+                      class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                      placeholder="如：王老师"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs text-zinc-300">社团简介（必填，10-500字）</label>
+                <textarea
+                  id="intro"
+                  class="mt-2 h-32 w-full resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                  placeholder="请描述社团定位、活动形式、招新对象等"
+                >手工制作、材料分享、作品展出与交流活动。欢迎喜欢手作的同学一起玩。</textarea>
+              </div>
+
+              <div>
+                <label class="text-xs text-zinc-300">联系方式（必填，最长50字）</label>
+                <div class="mt-2 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <i class="fa-regular fa-address-card text-zinc-400"></i>
+                  <input
+                    id="contact"
+                    class="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                    placeholder="手机号 / 邮箱 / 微信号"
+                    value="handmade-club@school.edu"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-sm font-medium text-zinc-200">证明材料（P1）</div>
+                    <div class="mt-1 text-xs text-zinc-400">MVP 可先不做上传，后续迭代引入图片/文件</div>
+                  </div>
+                  <span class="rounded-xl bg-amber-400/15 px-2 py-1 text-[11px] text-amber-100 ring-1 ring-amber-400/25">P1</span>
+                </div>
+                <div class="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div class="text-xs text-zinc-400">上传功能暂不可用（原型演示）</div>
+                  <button
+                    class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-zinc-400"
+                    type="button"
+                    disabled
+                  >
+                    <i class="fa-solid fa-upload mr-2"></i>选择文件
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <button
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:bg-white/10"
+                  type="button"
+                  onclick="resetForm()"
+                >
+                  <i class="fa-solid fa-rotate-left"></i>
+                  重置
+                </button>
+                <button
+                  id="submitBtn"
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400/15 px-5 py-3 text-sm font-medium text-emerald-100 ring-1 ring-emerald-400/25 transition hover:bg-emerald-400/20 active:scale-[0.99]"
+                  type="button"
+                >
+                  <i class="fa-solid fa-paper-plane"></i>
+                  提交申请
+                </button>
+              </div>
+            </form>
+          </div>
+        </main>
+
+        <aside class="col-span-12 lg:col-span-4">
+          <div class="glass rounded-3xl border border-white/10 bg-white/5 p-6 shadow-soft">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-zinc-400">审核流程</div>
+                <div class="mt-2 text-lg font-semibold tracking-tight">平台审核</div>
+              </div>
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+                <i class="fa-solid fa-user-shield text-zinc-100"></i>
+              </div>
+            </div>
+
+            <div class="mt-5 space-y-3 text-xs text-zinc-300">
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-400/15 text-emerald-200">
+                    <i class="fa-solid fa-1"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">提交资料</div>
+                    <div class="mt-1 leading-5 text-zinc-400">名称、类型、简介、联系方式等</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-white/10 text-zinc-100">
+                    <i class="fa-solid fa-2"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">平台审核</div>
+                    <div class="mt-1 leading-5 text-zinc-400">通过 / 驳回（填写原因）</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-start gap-3">
+                  <div class="grid h-9 w-9 place-items-center rounded-2xl bg-brand-500/20 text-brand-200">
+                    <i class="fa-solid fa-3"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-100">结果通知</div>
+                    <div class="mt-1 leading-5 text-zinc-400">站内通知告知结果，可再次提交</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-3xl border border-white/10 bg-white/5 p-5 text-xs text-zinc-400">
+              提交后，申请人会自动成为社团管理员（审核通过时）。
+              <a class="text-emerald-200 hover:text-emerald-100" href="./platform-admin-dashboard.html">查看平台后台演示</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="glass pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-lift">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/15 text-emerald-200">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-medium text-zinc-100" id="toastTitle">提示</div>
+          <div class="mt-0.5 truncate text-xs text-zinc-300" id="toastDesc">-</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /** @param {string} title @param {string} desc */
+      function toast(title, desc) {
+        const t = document.getElementById("toast");
+        const titleEl = document.getElementById("toastTitle");
+        const descEl = document.getElementById("toastDesc");
+        if (!t || !titleEl || !descEl) return;
+        titleEl.textContent = title;
+        descEl.textContent = desc;
+        t.classList.remove("hidden");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => t.classList.add("hidden"), 1700);
+      }
+
+      /** @returns {{name:string,type:string,intro:string,contact:string,advisor:string}} */
+      function getFormValue() {
+        return {
+          name: document.getElementById("clubName")?.value || "",
+          type: document.getElementById("clubType")?.value || "",
+          intro: document.getElementById("intro")?.value || "",
+          contact: document.getElementById("contact")?.value || "",
+          advisor: document.getElementById("advisor")?.value || "",
+        };
+      }
+
+      /** @param {{name:string,type:string,intro:string,contact:string}} v */
+      function validate(v) {
+        if (!v.name || v.name.trim().length < 2 || v.name.trim().length > 30) {
+          return "社团名称需为2-30字";
+        }
+        if (!v.type) return "请选择社团类型";
+        if (!v.intro || v.intro.trim().length < 10 || v.intro.trim().length > 500) {
+          return "社团简介需为10-500字";
+        }
+        if (!v.contact || v.contact.trim().length < 2 || v.contact.trim().length > 50) {
+          return "联系方式需为2-50字";
+        }
+        if (v.name.trim() === "AI 学术社") return "社团名称已存在（演示）";
+        return "";
+      }
+
+      function resetForm() {
+        const defaults = {
+          clubName: "校园手作社",
+          clubType: "兴趣",
+          intro: "手工制作、材料分享、作品展出与交流活动。欢迎喜欢手作的同学一起玩。",
+          contact: "handmade-club@school.edu",
+          advisor: "",
+        };
+        Object.entries(defaults).forEach(([k, v]) => {
+          const el = document.getElementById(k);
+          if (!el) return;
+          el.value = v;
+        });
+        toast("已重置", "已恢复默认示例数据");
+      }
+
+      function initSubmit() {
+        const btn = document.getElementById("submitBtn");
+        btn?.addEventListener("click", () => {
+          const v = getFormValue();
+          const err = validate(v);
+          if (err) {
+            toast("提交失败", err);
+            return;
+          }
+          toast("已提交申请", "状态：待审核。你可以在“我的申请”查看进度");
+          window.setTimeout(() => {
+            window.location.href = "./my-center.html";
+          }, 900);
+        });
+      }
+
+      initSubmit();
+    </script>
+  </body>
+</html>
+
